@@ -35,7 +35,7 @@ def barcodepage(request):
         wo = int(request.GET.get('wo', '0'))
 
         port = request.META.get('SERVER_PORT')
-        if port == '9527':
+        if port == '9525':
             if not all([request.GET.get('plant'), request.GET.get('mach'), request.GET.get('date'), request.GET.get('time'), request.GET.get('line')]):
                 plant, mach, date, time, line = 'NBR', 'VN_GD_NBR1_L01', current_date, current_time, 'A1'
                 return redirect(f'/?plant={plant}&mach={mach}&date={date}&time={time}&line={line}&wo=0')
