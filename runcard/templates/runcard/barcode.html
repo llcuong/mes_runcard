@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; {# center #}
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: left;
+        }
+        .runcard-left-line-button {
+            width: 3.5%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 5vh;
+        }
+        .runcard-middle{
+            width: 32%;
+            height: 100%;
+            position: relative;
+            margin-top: 15px;
+        }
+        .runcard-middle-1-row-table{
+            flex-direction: column;
+        }
+        .runcard-middle-2-row-button{
+            margin-top: 1vh;
+        }
+        .runcard-middle-2-row-button-2-row{
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            width: 60%;
+            margin: auto;
+        }
+        .runcard-middle-2-row-button-1-row{
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            width: 60%;
+            margin: auto;
+        }
+        .runcard-middle-3-row-ticket{
+            width: 80%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border: 2px solid #D9D9D9;
+            border-radius: 20px;
+            margin: 1.5vh auto 0;
+            box-shadow: 0 0 6px 6px #F2F2F2;
+        }
+        .runcard-middle-4-row-table {
+            margin: 2vh auto 0;
+            font-size: 2vh;
+            width: 80%;
+        }
+
+        .runcard-right-time-button{
+            width: 3%;
+            margin-left: 0.5%;
+        }
+        .button {
+            height: 4vh;
+            width: 80%;
+            font-size: 2.2vh;
+            margin: 5px 0;
+            text-decoration: none;
+            color: inherit;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button.active {
+            background-color: #e74c3c; /* Active button color */
+        }
+        .button2.active {
+            background-color: #e74c3c; /* Active button color */
+        }
+        .button3.active {
+            background-color: #e74c3c; /* Active button color */
+            color: white;
+        }
+        .button4.active {
+            background-color: #e74c3c; /* Active button color */
+        }
+        .button2{
+            height: 4vh;
+            width: 21%;
+            font-size: 2.5vh;
+            margin: 10px 5px;
+            text-decoration: none;
+            color: inherit;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button3{
+            height: 2.5vh;
+            width: 80%;
+            font-size: 1.9vh;
+            text-decoration: none;
+            color: inherit;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            color: black;
+            border: solid black 1px;
+            border-radius: 2px;
+            cursor: pointer;
+            margin-top: 1vh;
+        }
+        .button4{
+            height: 4vh;
+            width: 50%;
+            font-size: 2.2vh;
+            margin: 10px 5px;
+            text-decoration: none;
+            color: inherit;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .thickness{
+            width: 61.5%;
+            margin-left: 0.5%;
+            margin-right: 0.5%;
+            border: 1px solid #D9D9D9;
+            margin-top: 5px;
+            border-radius: 5px;
+            box-shadow: 0 0 3px 3px #F2F2F2;
+            display: flex;
+            flex-direction: column;
+        }
+        .thickness-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .thickness-table td {
+            text-align: left;
+            padding: 0px 5px 5px 0px;
+            font-size: 2.2vh;
+            box-sizing: border-box;
+        }
+        .thickness-table td:first-child {
+            width: 22%;
+        }
+        .thickness-table td:not(:first-child) {
+            width: calc(78% / 5);
+        }
+        .thickness-table input {
+            width: 100%;
+            box-sizing: border-box;
+            height: 4.8vh;
+            font-size: 2.8vh;
+        }
+        .thickness-input{
+            width: 94%;
+            margin: 10px auto;
+        }
+        .thickness-submit{
+            margin: 10px auto;
+        }
+        .thickness-submit button{
+            font-size: 2.5vh;
+            color: white;
+            background-color: #007BFF;
+            padding: 8px 15px;
+            border: 1px solid #007BFF;
+            border-radius: 5px;
+        }
+        @media (max-width: 1200px) {
+            .runcard-left-line-button {
+                 width: 10%;
+            }
+            .runcard-middle {
+                width: 80%;
+                margin-top: 30px;
+            }
+            .runcard-right-time-button{
+                width: 10%;
+            }
+            .runcard-middle-1-row-table{
+                min-height: 50%;
+            }
+            .runcard-middle-2-row-button-2-row{
+                margin: auto;
+                width: 60%;
+                padding-top: 10px;
+            }
+            .button2{
+                flex: 1 1 calc(25% - 20px);
+                width: calc(25% - 2vw);
+            }
+            .button4{
+                flex: 1 1 calc(50% - 20px);
+                font-size: 2.3vh;
+                width: calc(50% - 2.5vw);
+            }
+            .runcard-middle-3-row-ticket {
+                border-radius: 20px;
+            }
+            .thickness{
+                display: none;
+            }
+        }
+    </style>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            text-align: left;
+        }
+        th, td {
+            width: 25%;
+            padding: 3px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-size: 1.8vh;
+        }
+        th {
+            text-align: center;
+        }
+        .runcard-middle-1-row-table-content tr td, tr th{
+            border: 1px solid black;
+        }
+        {% if real_num > 0 and roll != '' %}
+            .runcard-middle-4-row-table-content{
+                border: 1px solid black;
+            }
+            .runcard-middle-4-row-table-content tr td{
+                border: 1px solid black;
+            }
+        {% else %}
+            .runcard-middle-4-row-table-content{
+                border: 1px solid white;
+                color: white;
+            }
+        {% endif %}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="runcard-left-line-button">
+            {% for machine_value, machine_name in machine_lines %}
+                <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ machine_value }}&date={{ current_date }}&time={{ current_time }}&line=A1&wo=0"
+                   class="button {% if machine_value == mach %}active{% endif %}">
+                    {{ machine_name }}
+                </a>
+            {% endfor %}
+        </div>
+        <div class="runcard-middle">
+            <div class="runcard-middle-1-row-table">
+                <table class="runcard-middle-1-row-table-content">
+                    <tr>
+                        <th colspan="4" style="font-size: 2vh">工站生產流程卡 Thẻ quy trình sản xuất</th>
+                    </tr>
+                    <tr>
+                        <td>日期 Ngày:</td>
+                        <td>{{ data_date1 }}</td>
+                        <td>半品料號<br>Mã vật tư:</td>
+                        <td>{{ mavattu }}</td>
+                    </tr>
+                    <tr>
+                        <td>廠 Xưởng:</td>
+                        <td>{{ plant }}</td>
+                        <td>客卢代碼<br>Mã khách hàng:</td>
+                        <td>{{ makhachhang }}</td>
+                    </tr>
+                    <tr>
+                        <td>樊台张 Máy:</td>
+                        <td>{{ may }}</td>
+                        <td rowspan="2">客户名稱<br>Tên viết tắt khách hàng:</td>
+                        <td rowspan="2">{{ tenkhachhang }}</td>
+                    </tr>
+                    <tr>
+                        <td>線別 Line:</td>
+                        <td>{{ line }}</td>
+                    </tr>
+                    <tr>
+                        <td>工單 Công đơn:</td>
+                        <td>{{ congdon }}</td>
+                        <td rowspan="2">品項 Loại:</td>
+                        <td rowspan="2">{{ loai }}</td>
+                    </tr>
+                    <tr>
+                        <td>AQL:</td>
+                        <td>{{ aql }}</td>
+                    </tr>
+                    <tr>
+                        <td>Người kiểm tra:</td>
+                        <td></td>
+                        <td>尺寸 Kích cỡ:</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="runcard-middle-2-row-button">
+                <div class="runcard-middle-2-row-button-1-row">
+                    {% for wo1, id in wo_zip %}
+                         <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ line }}&wo={{ id }}" class="button4 {% if wo == id|add:"0" %}active{% endif %}" style="{% if line_num < 2 %}color: white; background-color: white{% endif %}">
+                            {{ wo1 }}
+                         </a>
+                    {% endfor %}
+                </div>
+                <div class="runcard-middle-2-row-button-2-row">
+                    {% if plant == 'PVC' %}
+                        {% for pvc_line in pvc_lines %}
+                            {% if pvc_line == 'C' %}
+                                <a class="button2" style="color: white; background-color: white">
+                                    {{ pvc_line }}
+                                </a>
+                            {% else %}
+                                <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ pvc_line }}&wo={{ wo }}" class="button2 {% if pvc_line == line %}active{% endif %}">
+                                    {{ pvc_line }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% elif plant == 'NBR'%}
+                        {% for nbr_line in nbr_lines %}
+                            <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ nbr_line }}&wo={{ wo }}" class="button2 {% if nbr_line == line %}active{% endif %}">
+                                {{ nbr_line }}
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="runcard-middle-3-row-ticket" style="display: flex; flex-direction: column">
+                {% if real_num > 0 %}
+                    <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 0px;">
+                        <div style="width: 50%; text-align: left; margin-top: 15px;">
+                            <p style="font-size: 2.5vh; margin: 0 0 0 10%;">{{ time }} - {{ time|add:"1" }}</p>
+                        </div>
+                        <div style="width: 50%; text-align: right; margin-top: 0px;">
+                            <p style="font-size: 4vh; margin: 0 5% 0 0; color: {% if real_num > 0 and roll != '' %}green;{% else %}white;{% endif %}">&#10003;</p>
+                        </div>
+                    </div>
+                    <img src="data:image/svg+xml;base64,{{ svg_base64 }}" alt="Barcode 128" style="width: 80%; height: 10vh; margin: auto; margin-top: 1.2vh; margin-bottom: 0.4vh;">
+                    <p style="font-size: 2.5vh; margin: auto; margin-bottom: 18px; margin-top: 5px">{{ text_to_convert }}</p>
+                {% else %}
+                    <p style="font-size: 2.5vh;">沒有 Runcard !<br>Không có Runcard nhé !</p>
+                {% endif %}
+            </div>
+            <div class="runcard-middle-4-row-table" style="display: flex; flex-direction: column; margin-bottom: 4vh;">
+                <table class="runcard-middle-4-row-table-content">
+                    <tr>
+                        <td>Roll</td>
+                        <td>{{ roll }}</td>
+                        <td>Cuff</td>
+                        <td>{{ cuff }}</td>
+                        <td>Palm</td>
+                        <td>{{ palm }}</td>
+                    </tr>
+                    <tr>
+                        <td>Finger</td>
+                        <td>{{ finger }}</td>
+                        <td>Tip</td>
+                        <td>{{ fingerTip }}</td>
+                        <td>Weight</td>
+                        <td>{{ weight }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <p>Excution Time: {{ execution_time }}</p>
+            </div>
+        </div>
+        <div class="runcard-right-time-button">
+            <p style="font-size: 1.5vh; margin-top: 10px; margin-bottom: 0px; margin-left: 15%"><b>時間<br>Time</b></p>
+            {% for ptime in period_times %}
+                {% if current_time > 5 %}
+                    {% if ptime|add:"0" <= current_time %}
+                        {% if ptime|add:"0" > 5 %}
+                            <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}{% if ptime|add:"0" < current_time%}background-color: #AEAEAE; color: white;{% elif ptime|add:"0" == current_time %}background-color: #007BFF; color: white;{% endif %}{% endif %}">
+                                {{ ptime }}:00
+                            </a>
+                        {% else %}
+                            <a class="button3 {% if ptime == time %}active{% endif %}">
+                                {{ ptime }}:00
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a class="button3 {% if ptime == time %}active{% endif %}">
+                            {{ ptime }}:00
+                        </a>
+                    {% endif %}
+                {% else %}
+                    {% if ptime|add:"0" > 5%}
+                        <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}background-color: #AEAEAE; color: white{% endif %}">
+                            {{ ptime }}:00
+                        </a>
+                    {% else %}
+                        {% if ptime|add:"0" <= current_time %}
+                            <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}{% if ptime|add:"0" < current_time%}background-color: #AEAEAE; color: white;{% elif ptime|add:"0" == current_time %}background-color: blue; color: white{% endif %}{% endif %}">
+                                {{ ptime }}:00
+                            </a>
+                        {% else %}
+                            <a class="button3 {% if ptime == time %}active{% endif %}">
+                                {{ ptime }}:00
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="thickness">
+            <div class="thickness-input">
+                <form method="POST" >
+                    {% csrf_token %}
+                    <table class="thickness-table">
+                        <tr>
+                            <td>Runcard</td>
+                            <td>Roll</td>
+                            <td>Cuff</td>
+                            <td>Palm</td>
+                            <td>Finger</td>
+                            <td>FingerTip</td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" name="runcard" value="{{ text_to_convert }}" readonly required></td>
+                            <td><input type="text" name="roll" required></td>
+                            <td><input type="text" name="cuff" required></td>
+                            <td><input type="text" name="palm" required></td>
+                            <td><input type="text" name="finger" required></td>
+                            <td><input type="text" name="tip" required></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="thickness-submit">
+                <button type="submit">Submit</button>
+            </div>
+            <div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
