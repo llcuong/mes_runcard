@@ -12,6 +12,8 @@ def barcodepage(request):
     try:
         start_time = datetime.now()
         db_mes = mes_database()
+        period_times = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17',
+                        '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
         current_mins = int(datetime.now().strftime('%M'))
         current_time = int(datetime.now().strftime('%H'))
         current_date = datetime.now()  #datetime.strptime(date_string, "%Y-%m-%d")
@@ -26,27 +28,39 @@ def barcodepage(request):
         if current_mins > 40:
             current_time = current_time + 1
 
-        plant = str(request.GET.get('plant', 'NBR')).upper()
-        mach = request.GET.get('mach', 'VN_GD_NBR1_L01')
-        time = request.GET.get('time', str(current_time))
-        line = request.GET.get('line', 'A1')
+        plant = str(request.GET.get('plant', '')).upper()
+        mach = request.GET.get('mach', '')
+        time = request.GET.get('time', '')
+        line = request.GET.get('line', '')
         wo = int(request.GET.get('wo', '0'))
+
+        port = request.META.get('SERVER_PORT')
+        if port == '9527':
+            if not all([request.GET.get('plant'), request.GET.get('mach'), request.GET.get('date'), request.GET.get('time'), request.GET.get('line')]):
+                plant, mach, date, time, line = 'NBR', 'VN_GD_NBR1_L01', current_date, current_time, 'A1'
+                return redirect(f'/?plant={plant}&mach={mach}&date={date}&time={time}&line={line}&wo=0')
+        if port == '9526':
+            if not all([request.GET.get('plant'), request.GET.get('mach'), request.GET.get('date'), request.GET.get('time'), request.GET.get('line')]):
+                plant, mach, date, time, line = 'PVC', 'VN_GD_PVC1_L01', current_date, current_time, 'A1'
+                return redirect(f'/?plant={plant}&mach={mach}&date={date}&time={time}&line={line}&wo=0')
+
         sql01 = f"""SELECT id as mach_id, name as machine_name
                     FROM [PMGMES].[dbo].[PMG_DML_DataModelList]
                     WHERE DataModelTypeId = 'DMT000003'
                     and Abbreviation like '%{plant}%'
                     order by machine_name"""
-        period_times = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17',
-                        '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
         machine_lines_dicts = db_mes.select_sql_dict(sql01)
+
         if plant == 'PVC':
             machine_lines_name = [machine_lines_dict['machine_name'] for machine_lines_dict in machine_lines_dicts][:12]
         else:
             machine_lines_name = [machine_lines_dict['machine_name'] for machine_lines_dict in machine_lines_dicts]
         machine_lines_short = [str(machine_lines_dict['machine_name']).split('_')[-1] for machine_lines_dict in machine_lines_dicts]
         machine_lines = zip(machine_lines_name, machine_lines_short)
+
         nbr_lines = ['A1', 'B1', 'A2', 'B2']
-        pvc_lines = ['C', 'A1', 'B1', 'C']
+        pvc_lines = ['', 'A1', 'B1', '']
+
         sql02 = f"""SELECT rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL,
                         MAX(CASE WHEN ir.OptionName = 'Roll' THEN ir.InspectionValue END) AS Roll,
                         MAX(CASE WHEN ir.OptionName = 'Cuff' THEN ir.InspectionValue END) AS Cuff,
@@ -68,42 +82,36 @@ def barcodepage(request):
                         AND wo.StartDate is not NULL
                         Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL"""
         text_to_convert_dict = db_mes.select_sql_dict(sql02)
-        wo_list = [text_to_convert['WorkOrderId'] for text_to_convert in text_to_convert_dict] if len(text_to_convert_dict) > 0 else ['Null']
-        wo_id = [str(number) for number in range(len(wo_list))] if len(wo_list) > 0 else [0]
-        wo_zip = zip(wo_list, wo_id)
-        line_num = len(wo_id)
-        real_num = len(text_to_convert_dict)
-        mavattu = text_to_convert_dict[wo]['PartNo']
-        makhachhang = text_to_convert_dict[wo]['CustomerCode']
-        tenkhachhang = text_to_convert_dict[wo]['CustomerName']
-        aql = text_to_convert_dict[wo]['AQL']
-        congdon = text_to_convert_dict[wo]['WorkOrderId']
-        loai = text_to_convert_dict[wo]['ProductItem']
-        may = f"{plant}{mach.split('_')[-1][1:]}"
-        roll = text_to_convert_dict[wo]['Roll'] if text_to_convert_dict[wo]['Roll'] is not None else ''
-        cuff = text_to_convert_dict[wo]['Cuff'] if text_to_convert_dict[wo]['Cuff'] is not None else ''
-        palm = text_to_convert_dict[wo]['Palm'] if text_to_convert_dict[wo]['Palm'] is not None else ''
-        finger = text_to_convert_dict[wo]['Finger'] if text_to_convert_dict[wo]['Finger'] is not None else ''
-        fingerTip = text_to_convert_dict[wo]['FingerTip'] if text_to_convert_dict[wo]['FingerTip'] is not None else ''
-        weight = str(round(float(text_to_convert_dict[wo]['Weight']), 3)) if text_to_convert_dict[wo]['Weight'] is not None else ''
-        if len(text_to_convert_dict) > 0:
+        wo_len = len(text_to_convert_dict)
+        if wo_len > 0:
+            if wo_len == 1:
+                wo = 0
+            wo_list = [text_to_convert['WorkOrderId'] for text_to_convert in text_to_convert_dict]
+            wo_id = [str(number) for number in range(wo_len)]
+            wo_zip = zip(wo_list, wo_id)
+            mavattu = text_to_convert_dict[wo]['PartNo']
+            makhachhang = text_to_convert_dict[wo]['CustomerCode']
+            tenkhachhang = text_to_convert_dict[wo]['CustomerName']
+            aql = text_to_convert_dict[wo]['AQL']
+            congdon = text_to_convert_dict[wo]['WorkOrderId']
+            loai = text_to_convert_dict[wo]['ProductItem']
+            may = f"{plant}{mach.split('_')[-1][1:]}"
+            roll = text_to_convert_dict[wo]['Roll'] if text_to_convert_dict[wo]['Roll'] is not None else ''
+            cuff = text_to_convert_dict[wo]['Cuff'] if text_to_convert_dict[wo]['Cuff'] is not None else ''
+            palm = text_to_convert_dict[wo]['Palm'] if text_to_convert_dict[wo]['Palm'] is not None else ''
+            finger = text_to_convert_dict[wo]['Finger'] if text_to_convert_dict[wo]['Finger'] is not None else ''
+            fingerTip = text_to_convert_dict[wo]['FingerTip'] if text_to_convert_dict[wo]['FingerTip'] is not None else ''
+            weight = str(round(float(text_to_convert_dict[wo]['Weight']), 3)) if text_to_convert_dict[wo]['Weight'] is not None else ''
             text_to_convert = text_to_convert_dict[wo]['id']
-            barcode_class = barcode.get_barcode_class('code128')
-            barcode_svg = barcode_class(text_to_convert, writer=SVGWriter())
-            buffer = BytesIO()
-            barcode_svg.write(buffer)
-            svg_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
         else:
+            wo_zip = zip('0', '0')
             text_to_convert = ' '
-            barcode_class = barcode.get_barcode_class('code128')
-            barcode_svg = barcode_class(text_to_convert, writer=SVGWriter())
-            buffer = BytesIO()
-            barcode_svg.write(buffer)
-            svg_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        barcode_class = barcode.get_barcode_class('code128')
+        barcode_svg = barcode_class(text_to_convert, writer=SVGWriter())
+        buffer = BytesIO()
+        barcode_svg.write(buffer)
+        svg_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
-        if not all([request.GET.get('plant'), request.GET.get('mach'), request.GET.get('date'), request.GET.get('time'), request.GET.get('line')]):
-            plant, mach, date, time, line = 'NBR', 'VN_GD_NBR1_L01', current_date, current_time, 'A1'
-            return redirect(f'/?plant={plant}&mach={mach}&date={date}&time={time}&line={line}&wo=0')
         execution_time = f"{(datetime.now() - start_time).total_seconds():4f}"
     except Exception as e:
         print(e)

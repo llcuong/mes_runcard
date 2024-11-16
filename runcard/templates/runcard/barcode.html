@@ -259,7 +259,7 @@
         .runcard-middle-1-row-table-content tr td, tr th{
             border: 1px solid black;
         }
-        {% if real_num > 0 and roll != '' %}
+        {% if wo_len > 0 and roll != '' %}
             .runcard-middle-4-row-table-content{
                 border: 1px solid black;
             }
@@ -333,7 +333,7 @@
             <div class="runcard-middle-2-row-button">
                 <div class="runcard-middle-2-row-button-1-row">
                     {% for wo1, id in wo_zip %}
-                         <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ line }}&wo={{ id }}" class="button4 {% if wo == id|add:"0" %}active{% endif %}" style="{% if line_num < 2 %}color: white; background-color: white{% endif %}">
+                         <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ line }}&wo={{ id }}" class="button4 {% if wo == id|add:"0" %}active{% endif %}" style="{% if wo_len < 2 %}color: white; background-color: white{% endif %}">
                             {{ wo1 }}
                          </a>
                     {% endfor %}
@@ -341,7 +341,7 @@
                 <div class="runcard-middle-2-row-button-2-row">
                     {% if plant == 'PVC' %}
                         {% for pvc_line in pvc_lines %}
-                            {% if pvc_line == 'C' %}
+                            {% if pvc_line == '' %}
                                 <a class="button2" style="color: white; background-color: white">
                                     {{ pvc_line }}
                                 </a>
@@ -353,7 +353,7 @@
                         {% endfor %}
                     {% elif plant == 'NBR'%}
                         {% for nbr_line in nbr_lines %}
-                            <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ nbr_line }}&wo={{ wo }}" class="button2 {% if nbr_line == line %}active{% endif %}">
+                            <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ nbr_line }}&wo={% if wo_len > 0 %}{{ wo }}{% else %}0{% endif %}" class="button2 {% if nbr_line == line %}active{% endif %}">
                                 {{ nbr_line }}
                             </a>
                         {% endfor %}
@@ -361,16 +361,16 @@
                 </div>
             </div>
             <div class="runcard-middle-3-row-ticket" style="display: flex; flex-direction: column">
-                {% if real_num > 0 %}
+                {% if wo_len > 0 %}
                     <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 0px;">
                         <div style="width: 50%; text-align: left; margin-top: 15px;">
                             <p style="font-size: 2.5vh; margin: 0 0 0 10%;">{{ time }} - {{ time|add:"1" }}</p>
                         </div>
                         <div style="width: 50%; text-align: right; margin-top: 0px;">
-                            <p style="font-size: 4vh; margin: 0 5% 0 0; color: {% if real_num > 0 and roll != '' %}green;{% else %}white;{% endif %}">&#10003;</p>
+                            <p style="font-size: 4vh; margin: 0 5% 0 0; color: {% if wo_len > 0 and roll != '' %}green;{% else %}white;{% endif %}">&#10003;</p>
                         </div>
                     </div>
-                    <img src="data:image/svg+xml;base64,{{ svg_base64 }}" alt="Barcode 128" style="width: 80%; height: 10vh; margin: auto; margin-top: 1.2vh; margin-bottom: 0.4vh;">
+                    <img src="data:image/svg+xml;base64,{{ svg_base64 }}" alt="Barcode 128" style="width: 85%; height: 10vh; margin: auto; margin-top: 1.2vh; margin-bottom: 0.4vh;">
                     <p style="font-size: 2.5vh; margin: auto; margin-bottom: 18px; margin-top: 5px">{{ text_to_convert }}</p>
                 {% else %}
                     <p style="font-size: 2.5vh;">沒有 Runcard !<br>Không có Runcard nhé !</p>
