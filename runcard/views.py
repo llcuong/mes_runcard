@@ -61,25 +61,27 @@ def barcodepage(request):
         pvc_lines = ['', 'A1', 'B1', '']
 
         sql02 = f"""SELECT rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL,
-                        MAX(CASE WHEN ir.OptionName = 'Roll' THEN ir.InspectionValue END) AS Roll,
-                        MAX(CASE WHEN ir.OptionName = 'Cuff' THEN ir.InspectionValue END) AS Cuff,
-                        MAX(CASE WHEN ir.OptionName = 'Palm' THEN ir.InspectionValue END) AS Palm,
-                        MAX(CASE WHEN ir.OptionName = 'Finger' THEN ir.InspectionValue END) AS Finger,
-                        MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN ir.InspectionValue END) AS FingerTip,
-                        MAX(CASE WHEN ir.OptionName = 'Weight' THEN ir.InspectionValue END) AS Weight
-                        FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
-                        join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
-                        on wo.id = rc.WorkOrderId
-                        left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir
-                        on ir.RunCardId = rc.id
-                        WHERE rc.MachineName = '{mach}'
-                            AND rc.WorkCenterTypeName = '{plant}'  
-                            AND rc.LineName = '{line}'
-                            AND ((rc.Period > 5 AND rc.InspectionDate = '{data_date1}')
-                                OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
-                        AND rc.Period = '{time}'
-                        AND wo.StartDate is not NULL
-                        Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL"""
+                                MAX(CASE WHEN ir.OptionName = 'Roll' THEN ir.InspectionValue END) AS Roll,
+                                MAX(CASE WHEN ir.OptionName = 'Cuff' THEN ir.InspectionValue END) AS Cuff,
+                                MAX(CASE WHEN ir.OptionName = 'Palm' THEN ir.InspectionValue END) AS Palm,
+                                MAX(CASE WHEN ir.OptionName = 'Finger' THEN ir.InspectionValue END) AS Finger,
+                                MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN ir.InspectionValue END) AS FingerTip,
+                                MAX(CASE WHEN ir.OptionName = 'Weight' THEN ir.InspectionValue END) AS Weight,
+                                MAX(CASE WHEN ir.OptionName = 'Tensile' THEN ir.InspectionValue END) AS Tensile, 
+                                MAX(CASE WHEN ir.OptionName = 'Elongation' THEN ir.InspectionValue END) AS Elongation
+                                FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
+                                join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
+                                on wo.id = rc.WorkOrderId
+                                left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir
+                                on ir.RunCardId = rc.id
+                                WHERE rc.MachineName = '{mach}'
+                                    AND rc.WorkCenterTypeName = '{plant}'  
+                                    AND rc.LineName = '{line}'
+                                    AND ((rc.Period > 5 AND rc.InspectionDate = '{data_date1}')
+                                        OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
+                                AND rc.Period = '{time}'
+                                AND wo.StartDate is not NULL
+                                Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL"""
         text_to_convert_dict = db_mes.select_sql_dict(sql02)
         wo_len = len(text_to_convert_dict)
         if wo_len > 0:
@@ -101,6 +103,8 @@ def barcodepage(request):
             finger = text_to_convert_dict[wo]['Finger'] if text_to_convert_dict[wo]['Finger'] is not None else ''
             fingerTip = text_to_convert_dict[wo]['FingerTip'] if text_to_convert_dict[wo]['FingerTip'] is not None else ''
             weight = str(round(float(text_to_convert_dict[wo]['Weight']), 3)) if text_to_convert_dict[wo]['Weight'] is not None else ''
+            tensile = str(round(float(text_to_convert_dict[wo]['Tensile']), 1)) if text_to_convert_dict[wo]['Tensile'] is not None else ''
+            elongation = str(int(text_to_convert_dict[wo]['Elongation'])) if text_to_convert_dict[wo]['Elongation'] is not None else ''
             text_to_convert = text_to_convert_dict[wo]['id']
         else:
             wo_zip = zip('0', '0')
