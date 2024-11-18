@@ -10,7 +10,6 @@ barcode.base.Barcode.default_writer_options['write_text'] = False
 
 def barcodepage(request):
     try:
-        start_time = datetime.now()
         db_mes = mes_database()
         period_times = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17',
                         '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
@@ -111,11 +110,8 @@ def barcodepage(request):
         buffer = BytesIO()
         barcode_svg.write(buffer)
         svg_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-
-        execution_time = f"{(datetime.now() - start_time).total_seconds():4f}"
     except Exception as e:
         print(e)
-        execution_time = 0
         pass
     return render(request, 'runcard/barcode.html', locals())
 
