@@ -23,8 +23,8 @@ def barcodepage(request):
         else:
             data_date1 = (current_date - timedelta(days=1)).strftime('%Y-%m-%d')
             data_date2 = current_date.strftime('%Y-%m-%d')
-            current_date = data_date2
-        if current_mins > 40:
+            current_date = data_dat30e2
+        if current_mins > :
             current_time = current_time + 1
 
         plant = str(request.GET.get('plant', '')).upper()
