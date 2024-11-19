@@ -13,9 +13,13 @@ def barcodepage(request):
         db_mes = mes_database()
         period_times = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17',
                         '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
-        current_mins = int(datetime.now().strftime('%M'))
-        current_time = int(datetime.now().strftime('%H'))
-        current_date = datetime.now()  #datetime.strptime(date_string, "%Y-%m-%d")
+
+        now = datetime.now() + timedelta(minutes=46)
+        # now = datetime.strptime('2024-11-19 23:15:00.00000', '%Y-%m-%d %H:%M:%S.%f') + timedelta(minutes=46)
+        fnow = f"{int((str(now).split(' ')[-1]).split(':')[0])} giờ, ngày {str(now).split(' ')[0]}"
+        current_mins = int(now.strftime('%M'))
+        current_time = int(now.strftime('%H'))
+        current_date = now  #datetime.strptime(date_string, "%Y-%m-%d")
         if current_time > 5:
             data_date1 = current_date.strftime('%Y-%m-%d')
             data_date2 = (current_date + timedelta(days=1)).strftime('%Y-%m-%d')
@@ -24,8 +28,6 @@ def barcodepage(request):
             data_date1 = (current_date - timedelta(days=1)).strftime('%Y-%m-%d')
             data_date2 = current_date.strftime('%Y-%m-%d')
             current_date = data_date2
-        if current_mins > 30:
-            current_time = current_time + 1
 
         plant = str(request.GET.get('plant', '')).upper()
         mach = request.GET.get('mach', '')

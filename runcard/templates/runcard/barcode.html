@@ -476,4 +476,22 @@
         </div>
     </div>
 </body>
+<script>
+    function checkAndReload() {
+        const now = new Date();
+        const currentMinutes = now.getMinutes();
+        const currentSeconds = now.getSeconds();
+
+        if (currentMinutes === 15 && currentSeconds === 0) {
+            location.reload();
+            alert('Đã mở Runcard của {{ fnow }}')
+        } else {
+            const nextCheckDelay = (60 - now.getSeconds()) * 1000;
+            setTimeout(checkAndReload, nextCheckDelay);
+        }
+    }
+    window.onload = () => {
+        checkAndReload();
+    };
+</script>
 </html>
