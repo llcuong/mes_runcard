@@ -14,7 +14,7 @@ def barcodepage(request):
         period_times = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17',
                         '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
 
-        now = datetime.now() + timedelta(minutes=46)
+        now = datetime.now() + timedelta(minutes=41)
         # now = datetime.strptime('2024-11-19 23:15:00.00000', '%Y-%m-%d %H:%M:%S.%f') + timedelta(minutes=46)
         fnow = f"{int((str(now).split(' ')[-1]).split(':')[0])} giờ, ngày {str(now).split(' ')[0]}"
         current_mins = int(now.strftime('%M'))
