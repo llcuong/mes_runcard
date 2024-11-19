@@ -273,6 +273,45 @@
             }
         {% endif %}
     </style>
+    <style>
+        #customPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            text-align: center;
+            width: 400px;
+            border-radius: 8px;
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        #customPopup button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #customPopup button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -475,23 +514,50 @@
             </div>
         </div>
     </div>
-</body>
-<script>
-    function checkAndReload() {
-        const now = new Date();
-        const currentMinutes = now.getMinutes();
-        const currentSeconds = now.getSeconds();
+    <script>
+        function showCustomPopup(message) {
+            const popup = document.getElementById('customPopup');
+            const overlay = document.getElementById('overlay');
+            const popupMessage = document.getElementById('popupMessage');
 
-        if (currentMinutes === 15 && currentSeconds === 0) {
-            location.reload();
-            alert('Đã mở Runcard của {{ fnow }}')
-        } else {
-            const nextCheckDelay = (60 - now.getSeconds()) * 1000;
-            setTimeout(checkAndReload, nextCheckDelay);
+            popupMessage.textContent = message;
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
         }
-    }
-    window.onload = () => {
-        checkAndReload();
-    };
-</script>
+
+        function closePopup() {
+            const popup = document.getElementById('customPopup');
+            const overlay = document.getElementById('overlay');
+
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+            localStorage.removeItem('showPopup');
+        }
+
+        function checkAndReload() {
+            const now = new Date();
+            const currentMinutes = now.getMinutes();
+            const currentSeconds = now.getSeconds();
+
+            if (currentMinutes === 15 && currentSeconds === 0) {
+                localStorage.setItem('showPopup', 'true');
+                location.reload();
+            } else {
+                const nextCheckDelay = (60 - now.getSeconds()) * 1000;
+                setTimeout(checkAndReload, nextCheckDelay);
+            }
+        }
+        window.onload = () => {
+            if (localStorage.getItem('showPopup') === 'true') {
+                showCustomPopup('Đã mở Runcard của {{ fnow }}');
+            }
+            checkAndReload();
+        };
+    </script>
+    <div id="overlay"></div>
+    <div id="customPopup">
+        <p id="popupMessage"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</body>
 </html>
