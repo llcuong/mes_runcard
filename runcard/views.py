@@ -17,7 +17,7 @@ def barcodepage(request):
                         '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
 
         now = datetime.now() + timedelta(minutes=39)# + timedelta(hours=14) #46 21
-        print('barcode time: ', now)
+        # print('barcode time: ', now)
         # now = datetime.strptime('2024-11-22 05:15:00.00000', '%Y-%m-%d7/ %H:%M:%S.%f') + timedelta(minutes=39)
         fnow = f"{int((str(now).split(' ')[-1]).split(':')[0])} giờ, ngày {datetime.strptime(str(now).split(' ')[0], '%Y-%m-%d').strftime('%d-%m-%Y')}"
         current_mins = int(now.strftime('%M'))
@@ -132,7 +132,7 @@ def search_for_runcard(request):
                         '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
 
         today_date = datetime.today() - timedelta(hours=5) + timedelta(minutes=39)# + timedelta(hours=14)
-        print('search today: ', today_date)
+        # print('search today: ', today_date)
         last_7_days = [(today_date - timedelta(days=1) - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
 
         port = request.META.get('SERVER_PORT')
