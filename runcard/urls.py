@@ -1,7 +1,6 @@
 from django.urls import re_path as url
-from runcard.views import barcodepage, search_for_runcard
+from runcard.views import barcodepage
 
 urlpatterns = [
-    url(r'search', search_for_runcard, name='search'),
     url(r'', barcodepage, name='barcodepage'),
 ]
