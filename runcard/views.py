@@ -119,5 +119,6 @@ def barcodepage(request):
     except Exception as e:
         print(e)
         pass
+
     return render(request, 'runcard/barcode.html', locals())
 
